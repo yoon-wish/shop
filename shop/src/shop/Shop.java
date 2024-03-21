@@ -1,9 +1,10 @@
 package shop;
 
 public class Shop {
+	UserManager userManager = UserManager.getInstance();
+	ItemManager itemManager = ItemManager.getInstance();
+
 	String title;
-	
-	UserManager manager = UserManager.getInstance();
 	
 	public Shop(String title) {
 		this.title = title;

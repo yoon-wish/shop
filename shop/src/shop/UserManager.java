@@ -3,10 +3,10 @@ package shop;
 import java.util.ArrayList;
 
 public class UserManager {
-	private ArrayList<User> list;
+	private ArrayList<User> group;
 	
 	private UserManager() {
-		list = new ArrayList<>();
+		group = new ArrayList<>();
 	}
 	
 	private static UserManager instance = new UserManager();
