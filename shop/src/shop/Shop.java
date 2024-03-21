@@ -111,8 +111,17 @@ public class Shop {
 	}
 
 	private void leave() {
-		String password = inputString("password");
+		if(log == 0) {
+			System.err.println("관리자 계정은 탈퇴 불가");
+			return;
+		}
 		
+		String password = inputString("password");
+		if(userManager.readUser(log).getPassword().equals(password)) {
+			System.out.println("탈퇴완료");
+			log = 0;
+		} else
+			System.err.println("비밀번호가 일치하지 않습니다.");
 	}
 
 	private void login() {
