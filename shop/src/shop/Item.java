@@ -4,6 +4,10 @@ public class Item {
 	private String name;
 	private int price;
 	
+	public Item() {
+		
+	}
+	
 	public Item(String name, int price) {
 		this.name = name;
 		this.price = price;
@@ -15,6 +19,10 @@ public class Item {
 	
 	public int getPrice() {
 		return this.price;
+	}
+	
+	public Item clone() {
+		return new Item(this.name, this.price);
 	}
 	
 	@Override

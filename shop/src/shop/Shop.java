@@ -33,7 +33,6 @@ public class Shop {
 	private UserManager userManager = UserManager.getInstance();
 	private ItemManager itemManager = ItemManager.getInstance();
 
-	private ArrayList<Item> items;
 	private String title;
 	private int log;
 
@@ -43,7 +42,6 @@ public class Shop {
 	}
 
 	private void setMarket() {
-		items = new ArrayList<>();
 		log = -1;
 		userManager.createUser("1111", "1111"); // 관리자 계정
 	}
@@ -113,7 +111,8 @@ public class Shop {
 	}
 
 	private void leave() {
-
+		String password = inputString("password");
+		
 	}
 
 	private void login() {
@@ -197,42 +196,28 @@ public class Shop {
 
 	private void addItem() {
 		String name = inputString("아이템명");
-		if (duplItem(name)) {
-			System.err.println("이미 존재하는 품목입니다.");
-			return;
-		}
 		int price = inputNumber("상품 가격");
 
-		Item item = new Item(name, price);
-		items.add(item);
-	}
-
-	private boolean duplItem(String itemName) {
-		for (int i = 0; i < items.size(); i++) {
-			if (items.get(i).getName().equals(itemName))
-				return true;
-		}
-		return false;
+		itemManager.createItem(name, price);
 	}
 
 	private void showItem() {
-		for (int i = 0; i < items.size(); i++)
-			System.out.println((i + 1) + ") " + items.get(i));
+		for (int i = 0; i < itemManager.itemSize(); i++)
+			System.out.println((i + 1) + ") " + itemManager.readItem(i));
 	}
 
 	private void deleteItem() {
 		showItem();
 		int index = inputNumber("삭제할 아이템 번호") - 1;
-		if (index < 0 || index >= items.size())
+		if (index < 0 || index >= itemManager.itemSize())
 			return;
 
 		deleteUserItem(index); // 유저가 장바구니에 담아둔 아이템들도 지우기
-
-		items.remove(index);
+		itemManager.deleteItem(index);
 	}
 
 	private void deleteUserItem(int index) {
-		String itemName = items.get(index).getName();
+		String itemName = itemManager.readItem(index).getName();
 
 		for (int i = 0; i < userManager.userSize(); i++) {
 			Cart cart = userManager.readUser(i).getCart();
@@ -257,13 +242,13 @@ public class Shop {
 
 	private void modifyItemName(int index) {
 		String name = inputString("수정할 아이템명");
-		if (duplItem(name)) {
+		if (itemManager.duplItemName(name)) {
 			System.err.println("이미 존재하는 품목입니다.");
 			return;
 		}
 		
-		Item item = new Item(name, items.get(index).getPrice());
-		items.set(index, item);
+		Item item = new Item(name, itemManager.readItem(index).getPrice());
+		itemManager.updateItem(index, item);
 		
 		System.out.println("수정완료");
 	}
@@ -271,8 +256,8 @@ public class Shop {
 	private void modifyItemPrice(int index) {
 		int price = inputNumber("수정할 가격");
 		
-		Item item = new Item(items.get(index).getName(), price);
-		items.set(index, item);
+		Item item = new Item(itemManager.readItem(index).getName(), price);
+		itemManager.updateItem(index, item);
 		
 		System.out.println("수정완료");
 	}
