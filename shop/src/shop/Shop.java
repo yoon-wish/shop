@@ -27,14 +27,23 @@ public class Shop {
 	private final int CHECK_LOGIN = 1;
 	private final int CHECK_LOGOUT = 2;
 
+	private final int MODIFY_NAME = 1;
+	private final int MODIFY_PRICE = 2;
+
 	private UserManager userManager = UserManager.getInstance();
 	private ItemManager itemManager = ItemManager.getInstance();
 
+	private ArrayList<Item> items;
 	private String title;
 	private int log;
 
 	public Shop(String title) {
 		this.title = title;
+		setMarket();
+	}
+
+	private void setMarket() {
+		items = new ArrayList<>();
 		log = -1;
 		userManager.createUser("1111", "1111"); // 관리자 계정
 	}
@@ -87,9 +96,9 @@ public class Shop {
 
 		return true;
 	}
-	
+
 	private boolean checkHost() {
-		if(log != 0) {
+		if (log != 0) {
 			System.err.println("관리자 계정만 접근가능합니다.");
 			return false;
 		}
@@ -101,7 +110,6 @@ public class Shop {
 		String password = inputString("password");
 
 		userManager.createUser(id, password);
-
 	}
 
 	private void leave() {
@@ -111,15 +119,15 @@ public class Shop {
 	private void login() {
 		String id = inputString("id");
 		int index = userManager.findIndexById(id);
-		
-		if(index == -1) {
+
+		if (index == -1) {
 			System.err.println("존재하지 않는 회원입니다.");
 			return;
 		}
-		
+
 		String password = inputString("password");
 		User user = userManager.readUser(index);
-		if(user.getPassword().equals(password)){
+		if (user.getPassword().equals(password)) {
 			log = index;
 			System.out.printf("[%s]님 로그인 성공\n", user.getId());
 		} else
@@ -188,15 +196,92 @@ public class Shop {
 	}
 
 	private void addItem() {
+		String name = inputString("아이템명");
+		if (duplItem(name)) {
+			System.err.println("이미 존재하는 품목입니다.");
+			return;
+		}
+		int price = inputNumber("상품 가격");
 
+		Item item = new Item(name, price);
+		items.add(item);
+	}
+
+	private boolean duplItem(String itemName) {
+		for (int i = 0; i < items.size(); i++) {
+			if (items.get(i).getName().equals(itemName))
+				return true;
+		}
+		return false;
+	}
+
+	private void showItem() {
+		for (int i = 0; i < items.size(); i++)
+			System.out.println((i + 1) + ") " + items.get(i));
 	}
 
 	private void deleteItem() {
+		showItem();
+		int index = inputNumber("삭제할 아이템 번호") - 1;
+		if (index < 0 || index >= items.size())
+			return;
 
+		deleteUserItem(index); // 유저가 장바구니에 담아둔 아이템들도 지우기
+
+		items.remove(index);
+	}
+
+	private void deleteUserItem(int index) {
+		String itemName = items.get(index).getName();
+
+		for (int i = 0; i < userManager.userSize(); i++) {
+			Cart cart = userManager.readUser(i).getCart();
+			for (int j = 0; j < cart.listSize(); j++) {
+				if (cart.getList(j).getName().equals(itemName)) {
+					cart.removeList(index);
+				}
+			}
+		}
+		System.out.println("삭제완료");
 	}
 
 	private void modifyItem() {
+		showItem();
+		int index = inputNumber("수정할 품목") - 1;
+		int menu = printModifySubMenu();
+		if (menu == MODIFY_NAME) {
+			modifyItemName(index);
+		} else if (menu == MODIFY_PRICE)
+			modifyItemPrice(index);
+	}
 
+	private void modifyItemName(int index) {
+		String name = inputString("수정할 아이템명");
+		if (duplItem(name)) {
+			System.err.println("이미 존재하는 품목입니다.");
+			return;
+		}
+		
+		Item item = new Item(name, items.get(index).getPrice());
+		items.set(index, item);
+		
+		System.out.println("수정완료");
+	}
+	
+	private void modifyItemPrice(int index) {
+		int price = inputNumber("수정할 가격");
+		
+		Item item = new Item(items.get(index).getName(), price);
+		items.set(index, item);
+		
+		System.out.println("수정완료");
+	}
+
+	private int printModifySubMenu() {
+		System.out.println("1. 상품명");
+		System.out.println("2. 가격");
+
+		return inputNumber("선택");
 	}
 
 	private void result() {

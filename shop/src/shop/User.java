@@ -3,24 +3,23 @@ package shop;
 import java.util.ArrayList;
 
 public class User {
-	private ArrayList<Cart> carts;
-	private String id; 
+	private String id;
 	private String password;
+	private Cart cart;
 
 	public User() {
-		
+
 	}
-	
+
 	public User(String id, String password) {
 		this.id = id;
 		this.password = password;
-		this.carts = new ArrayList<>();
+		this.cart = new Cart(this.id);
 	}
 
-	public User(String id, String password, ArrayList<Cart> carts) {
+	public User(String id, String password, Cart cart) {
 		this.id = id;
 		this.password = password;
-		this.carts = carts;
 	}
 
 	public String getId() {
@@ -31,7 +30,13 @@ public class User {
 		return this.password;
 	}
 
+	public Cart getCart() {
+		if(this.cart == null)
+			return new Cart(this.id);
+		return this.cart.clone();
+	}
+
 	public User clone() {
-		return new User(this.id, this.password, this.carts);
+		return new User(this.id, this.password, this.cart);
 	}
 }

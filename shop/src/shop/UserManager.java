@@ -49,4 +49,8 @@ public class UserManager {
 		}
 		return index;
 	}
+	
+	public int userSize() {
+		return group.size();
+	}
 }
