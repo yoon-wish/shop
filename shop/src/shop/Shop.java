@@ -24,13 +24,18 @@ public class Shop {
 	private final int MODIFY_ITEM = 3;
 	private final int RESULT = 4;
 
+	private final int CHECK_LOGIN = 1;
+	private final int CHECK_LOGOUT = 2;
+
 	private UserManager userManager = UserManager.getInstance();
 	private ItemManager itemManager = ItemManager.getInstance();
 
 	private String title;
+	private int log;
 
 	public Shop(String title) {
 		this.title = title;
+		log = -1;
 		userManager.createUser("1111", "1111"); // 관리자 계정
 	}
 
@@ -50,31 +55,53 @@ public class Shop {
 	}
 
 	private void runMenu(int select) {
-		if (select == JOIN)
+		if (select == JOIN && isLogin(CHECK_LOGOUT))
 			join();
-		else if (select == LEAVE)
+		else if (select == LEAVE && isLogin(CHECK_LOGIN))
 			leave();
-		else if (select == LOGIN)
+		else if (select == LOGIN && isLogin(CHECK_LOGOUT))
 			login();
-		else if (select == LOGOUT)
+		else if (select == LOGOUT && isLogin(CHECK_LOGIN))
 			logout();
-		else if (select == SHOPPING)
+		else if (select == SHOPPING && isLogin(CHECK_LOGIN))
 			shopping();
-		else if (select == MY_PAGE) {
+		else if (select == MY_PAGE && isLogin(CHECK_LOGIN)) {
 			printMyPageSubMenu();
 			runMyPage(option());
-		} else if (select == HOST) {
+		} else if (select == HOST && checkHost()) {
 			printHostMenu();
 			runHost(option());
 		}
 	}
 
+	private boolean isLogin(int check) {
+		if (check == CHECK_LOGOUT && log != -1) {
+			System.err.println("로그아웃 후 이용가능");
+			return false;
+		}
+
+		if (check == CHECK_LOGIN && log == -1) {
+			System.err.println("로그인 후 이용가능");
+			return false;
+		}
+
+		return true;
+	}
+	
+	private boolean checkHost() {
+		if(log != 0) {
+			System.err.println("관리자 계정만 접근가능합니다.");
+			return false;
+		}
+		return true;
+	}
+
 	private void join() {
 		String id = inputString("id");
 		String password = inputString("password");
-		
+
 		userManager.createUser(id, password);
-		
+
 	}
 
 	private void leave() {
@@ -82,11 +109,26 @@ public class Shop {
 	}
 
 	private void login() {
-
+		String id = inputString("id");
+		int index = userManager.findIndexById(id);
+		
+		if(index == -1) {
+			System.err.println("존재하지 않는 회원입니다.");
+			return;
+		}
+		
+		String password = inputString("password");
+		User user = userManager.readUser(index);
+		if(user.getPassword().equals(password)){
+			log = index;
+			System.out.printf("[%s]님 로그인 성공\n", user.getId());
+		} else
+			System.err.println("비밀번호가 틀렸습니다.");
 	}
 
 	private void logout() {
-
+		log = -1;
+		System.err.println("로그아웃 되었습니다.");
 	}
 
 	private void shopping() {

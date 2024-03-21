@@ -36,4 +36,17 @@ public class UserManager {
 		}
 		return false;
 	}
+	
+	public User readUser(int index) {
+		return group.get(index).clone();
+	}
+	
+	public int findIndexById(String id) {
+		int index = -1;
+		for(int i=0; i<group.size(); i++) {
+			if(group.get(i).getId().equals(id))
+				index = i;
+		}
+		return index;
+	}
 }
