@@ -70,7 +70,11 @@ public class Shop {
 	}
 
 	private void join() {
-
+		String id = inputString("id");
+		String password = inputString("password");
+		
+		userManager.createUser(id, password);
+		
 	}
 
 	private void leave() {
