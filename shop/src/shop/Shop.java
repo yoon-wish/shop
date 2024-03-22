@@ -238,7 +238,32 @@ public class Shop {
 	}
 
 	private void delete() {
-
+		myBasket();
+		String delProduct = inputString("삭제할 품목 이름");
+		
+		if(checkDuplProducts(delProduct)) {
+			System.err.println("존재하지 않습니다.");
+			return;
+		}
+		
+		for(int i=0; i<userManager.getMyListSize(log); i++) {
+			Item item = userManager.getMyList(log, i);
+			if(item.getName().equals(delProduct)) {
+				userManager.deleteListItem(log, i);
+			}
+		}
+		System.out.println("삭제완료");
+		
+	}
+	
+	public boolean checkDuplProducts(String name) {
+		for(int i=0; i<userManager.getMyListSize(log); i++) {
+			Item item = userManager.getMyList(log, i);
+			if(item.getName().equals(name)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private void modify() {

@@ -69,7 +69,13 @@ public class UserManager {
 		user.getCart().addList(item);
 	}
 	
+	public void deleteListItem(int log, int index) {
+		User user = readUser(log);
+		user.getCart().removeList(index);
+	}
+	
 	public int userSize() {
 		return group.size();
 	}
+	
 }
