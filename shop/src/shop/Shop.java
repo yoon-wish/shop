@@ -280,11 +280,20 @@ public class Shop {
 		String input = inputString("결제하시겠습니까?(y/n)");
 		if (input.equals("y")) {
 			result += cash;
+			receipt(cash);
 			System.out.println("결제완료");
 			userManager.updateUser(log); // 털어내기
 		}
 	}
 
+	private void receipt(int cash) {
+		System.out.println("--------------------");
+		myBasket();
+		System.out.println("--------------------");
+		System.out.println("총액: " + cash +"원");
+		System.out.println("--------------------");
+	}
+	
 	private void addItem() {
 		String name = inputString("아이템명");
 		int price = inputNumber("상품 가격");
