@@ -1,16 +1,15 @@
 package shop;
 
-import java.util.ArrayList;
 
 public class User {
 	private String id;
 	private String password;
 	private Cart cart;
 
-	public User() {
-
-	}
-
+//	public User() {
+//
+//	}
+	
 	public User(String id, String password) {
 		this.id = id;
 		this.password = password;
@@ -20,6 +19,7 @@ public class User {
 	public User(String id, String password, Cart cart) {
 		this.id = id;
 		this.password = password;
+		this.cart = cart;
 	}
 
 	public String getId() {
@@ -31,9 +31,7 @@ public class User {
 	}
 
 	public Cart getCart() {
-		if(this.cart == null)
-			return new Cart(this.id);
-		return this.cart.clone();
+		return this.cart;
 	}
 
 	public User clone() {

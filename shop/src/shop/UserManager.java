@@ -17,16 +17,15 @@ public class UserManager {
 	}
 
 	// CRUD
-	public User createUser(String id, String password) {
+	public void createUser(String id, String password) {
 		if (duplUserId(id)) {
 			System.err.println("중복된 아이디입니다.");
-			return new User();
+			return;
 		}
 
 		User user = new User(id, password);
 		group.add(user);
 		System.out.println("회원가입 완료");
-		return user.clone();
 	}
 
 	private boolean duplUserId(String id) {
@@ -48,6 +47,26 @@ public class UserManager {
 				index = i;
 		}
 		return index;
+	}
+	
+	public ArrayList<Item> getMyList(int index){
+		User user = readUser(index);
+		return user.getCart().getList();
+	}
+	
+	public Item getMyList(int userIndex, int listIndex) {
+		User user = readUser(userIndex);
+		return user.getCart().getList().get(listIndex);
+	}
+	
+	public int getMyListSize(int userIndex) {
+		User user = readUser(userIndex);
+		return user.getCart().listSize();
+	}
+	
+	public void addListItem(int index, Item item) {
+		User user = readUser(index);
+		user.getCart().addList(item);
 	}
 	
 	public int userSize() {

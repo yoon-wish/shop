@@ -15,15 +15,14 @@ public class ItemManager {
 		return instance;
 	}
 	
-	public Item createItem(String name, int price) {
+	public void createItem(String name, int price) {
 		if (duplItemName(name)) {
 			System.err.println("중복된 아이디입니다.");
-			return new Item();
+			return;
 		}
 		Item item = new Item(name, price);
 		items.add(item);
 		System.out.println("아이템 추가완료");
-		return item.clone();
 	}
 	
 	public boolean duplItemName(String name) {
@@ -49,4 +48,5 @@ public class ItemManager {
 	public int itemSize() {
 		return items.size();
 	}
+	
 }
