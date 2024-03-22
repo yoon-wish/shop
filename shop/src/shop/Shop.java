@@ -478,9 +478,11 @@ public class Shop {
 				index++;
 			}
 
-			String[] itemInfo = temp[0].split("/");
-			for (int i = 0; i < itemInfo.length; i += 2) {
-				itemManager.createItem(itemInfo[i], Integer.parseInt(itemInfo[i + 1]));
+			if (temp[0] != "") {
+				String[] itemInfo = temp[0].split("/");
+				for (int i = 0; i < itemInfo.length; i += 2) {
+					itemManager.createItem(itemInfo[i], Integer.parseInt(itemInfo[i + 1]));
+				}
 			}
 		}
 	}
