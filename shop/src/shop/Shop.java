@@ -472,7 +472,7 @@ public class Shop {
 	public void init() {
 		String text = fileManager.load();
 
-		if (text != "") {
+		if (!text.equals("")) {
 			String[] temp = text.split("\n");
 			int index = 0;
 			for (int i = 1; i < temp.length; i++) {
@@ -487,7 +487,7 @@ public class Shop {
 				index++;
 			}
 
-			if (temp[0] != "") {
+			if (!temp[0].equals("")) {
 				String[] itemInfo = temp[0].split("/");
 				for (int i = 0; i < itemInfo.length; i += 2) {
 					itemManager.createItem(itemInfo[i], Integer.parseInt(itemInfo[i + 1]));
