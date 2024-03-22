@@ -33,6 +33,10 @@ public class User {
 	public Cart getCart() {
 		return this.cart;
 	}
+	
+	public void setCart() {
+		this.cart = new Cart(this.id);
+	}
 
 	public User clone() {
 		return new User(this.id, this.password, this.cart);

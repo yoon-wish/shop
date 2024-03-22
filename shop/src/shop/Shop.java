@@ -267,7 +267,20 @@ public class Shop {
 	}
 
 	private void payment() {
-
+		int size = userManager.readUserCart(log).listSize();
+		int cash=0;
+		for(int i=0; i<size; i++) {
+			Item item = userManager.readUserCart(log).getList(i);
+			cash += item.getCount() * item.getPrice();
+		}
+		
+		System.out.println("총액: " + cash +"원");
+		String input = inputString("결제하시겠습니까?(y/n)");
+		if(input.equals("y")) {
+			result += cash;
+			System.out.println("결제완료");
+			userManager.updateUser(log);	// 털어내기
+		}
 	}
 
 	private void addItem() {
@@ -381,9 +394,9 @@ public class Shop {
 	// ㄴ 로그아웃 [O]
 	// ㄴ 쇼핑하기 [O]
 	// ㄴ 마이페이지
-	// ㄴ 내장바구니 [X]
-	// ㄴ 항목삭제 [X]
-	// ㄴ 수량수정 [X]
+	// ㄴ 내장바구니 [O]
+	// ㄴ 항목삭제 [O]
+	// ㄴ 수량수정 [O]
 	// ㄴ 결제 [X]
 	// 파일
 	// ㄴ 자동저장 [X]
