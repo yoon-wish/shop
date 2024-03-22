@@ -40,6 +40,10 @@ public class UserManager {
 		return group.get(index).clone();
 	}
 	
+	public Cart readUserCart(int index) {
+		return group.get(index).getCart();
+	}
+	
 	public int findIndexById(String id) {
 		int index = -1;
 		for(int i=0; i<group.size(); i++) {
@@ -47,31 +51,6 @@ public class UserManager {
 				index = i;
 		}
 		return index;
-	}
-	
-	public ArrayList<Item> getMyList(int index){
-		User user = readUser(index);
-		return user.getCart().getList();
-	}
-	
-	public Item getMyList(int userIndex, int listIndex) {
-		User user = readUser(userIndex);
-		return user.getCart().getList().get(listIndex);
-	}
-	
-	public int getMyListSize(int userIndex) {
-		User user = readUser(userIndex);
-		return user.getCart().listSize();
-	}
-	
-	public void addListItem(int index, Item item) {
-		User user = readUser(index);
-		user.getCart().addList(item);
-	}
-	
-	public void deleteListItem(int log, int index) {
-		User user = readUser(log);
-		user.getCart().removeList(index);
 	}
 	
 	public int userSize() {

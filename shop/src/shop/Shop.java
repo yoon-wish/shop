@@ -155,8 +155,15 @@ public class Shop {
 			return;
 		}
 
-		Item item = itemManager.readItem(number);
-		userManager.addListItem(log, item);
+		String name = itemManager.readItem(number).getName();
+		int index = checkDuplProducts(name);
+		if (index == -1) {
+			Item item = itemManager.readItem(number);
+			userManager.readUserCart(log).addListItem(item);
+		} else {
+			Item item = userManager.readUserCart(log).getList(index);
+			item.setCount();
+		}
 		System.out.println("장바구니를 확인하세요.");
 	}
 
@@ -197,77 +204,66 @@ public class Shop {
 	}
 
 	private void myBasket() {
-		int[] count = new int[itemManager.itemSize()];
-		countProduct(count);
-		showBasket(count);
+		showBasket();
 	}
 
-	private void countProduct(int[] count) {
-		for (int i = 0; i < userManager.getMyListSize(log); i++) {
-			Item item = userManager.getMyList(log, i);
-			for (int j = 0; j < itemManager.itemSize(); j++) {
-				if (item.getName().equals(itemManager.readItem(j).getName())) {
-					count[j]++;
-				}
-			}
-		}
-	}
+	private void showBasket() {
+		int size = userManager.readUserCart(log).listSize();
+		for (int i = 0; i < size; i++) {
+			Item item = userManager.readUserCart(log).getList(i);
+			String itemName = item.getName();
+			int itemCount = item.getCount();
+			int itemPrice = item.getPrice();
+			System.out.printf("%s) %d개 (개당 %d원)\n", itemName, itemCount, itemPrice);
 
-	private int countProductPrice() {
-		int tempResult = 0;
-		for (int i = 0; i < userManager.getMyListSize(log); i++) {
-			Item item = userManager.getMyList(log, i);
-			for (int j = 0; j < itemManager.itemSize(); j++) {
-				if (item.getName().equals(itemManager.readItem(j).getName())) {
-					tempResult += itemManager.readItem(j).getPrice();
-				}
-			}
-		}
-		return tempResult;
-	}
-
-	private void showBasket(int[] count) {
-		for (int i = 0; i < count.length; i++) {
-			String itemName = itemManager.readItem(i).getName();
-			int itemPrice = itemManager.readItem(i).getPrice();
-
-			if (count[i] > 0) {
-				System.out.printf("%s) %d개 (개당 %d원)\n", itemName, count[i], itemPrice);
-			}
 		}
 	}
 
 	private void delete() {
 		myBasket();
-		String delProduct = inputString("삭제할 품목 이름");
-		
-		if(checkDuplProducts(delProduct)) {
+		String delProduct = inputString("품목명");
+
+		int index = checkDuplProducts(delProduct);
+		if (index == -1) {
 			System.err.println("존재하지 않습니다.");
 			return;
 		}
 		
-		for(int i=0; i<userManager.getMyListSize(log); i++) {
-			Item item = userManager.getMyList(log, i);
-			if(item.getName().equals(delProduct)) {
-				userManager.deleteListItem(log, i);
-			}
-		}
+		userManager.readUserCart(log).deleteListItem(index);
 		System.out.println("삭제완료");
-		
+
 	}
-	
-	public boolean checkDuplProducts(String name) {
-		for(int i=0; i<userManager.getMyListSize(log); i++) {
-			Item item = userManager.getMyList(log, i);
-			if(item.getName().equals(name)) {
-				return false;
+
+	public int checkDuplProducts(String name) {
+		ArrayList<Item> temp = userManager.readUser(log).getCart().getList();
+		int size = temp.size();
+		for (int i = 0; i < size; i++) {
+			Item item = temp.get(i);
+			if (item.getName().equals(name)) {
+				return i;
 			}
 		}
-		return true;
+		return -1;
 	}
 
 	private void modify() {
+		myBasket();
+		String delProduct = inputString("품목명");
 
+		int index = checkDuplProducts(delProduct);
+		if (index == -1) {
+			System.err.println("존재하지 않습니다.");
+			return;
+		}
+		
+		int mount = inputNumber("수량");
+		if(mount < 1) {
+			System.err.println("1이상 입력");
+			return;
+		}
+		
+		userManager.readUserCart(log).getList(index).setCount(mount);
+		System.out.println("수정완료");
 	}
 
 	private void payment() {
@@ -300,11 +296,11 @@ public class Shop {
 		String itemName = itemManager.readItem(index).getName();
 
 		for (int i = 0; i < userManager.userSize(); i++) {
-			Cart cart = userManager.readUser(i).getCart();
+			Cart cart = userManager.readUserCart(i);
 			for (int j = 0; j < cart.listSize(); j++) {
-				Item item = cart.getList().get(j);
+				Item item = cart.getList(j);
 				if (item.getName().equals(itemName)) {
-					cart.removeList(index);
+					cart.deleteListItem(index);
 				}
 			}
 		}
