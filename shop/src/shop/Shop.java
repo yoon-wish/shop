@@ -463,23 +463,25 @@ public class Shop {
 	public void init() {
 		String text = fileManager.load();
 
-		String[] temp = text.split("\n");
-		int index = 0;
-		for (int i = 1; i < temp.length; i++) {
-			String[] info = temp[i].split("/");
-			if (!info[0].equals("1111"))
-				userManager.createUser(info[0], info[1]);
-			int size = info.length - 2;
-			for (int j = 2; j < size; j += 3) {
-				Item item = new Item(info[j], Integer.parseInt(info[j + 1]), Integer.parseInt(info[j + 2]));
-				userManager.readUserCart(index).addListItem(item);
+		if (text != "") {
+			String[] temp = text.split("\n");
+			int index = 0;
+			for (int i = 1; i < temp.length; i++) {
+				String[] info = temp[i].split("/");
+				if (!info[0].equals("1111"))
+					userManager.createUser(info[0], info[1]);
+				int size = info.length - 2;
+				for (int j = 2; j < size; j += 3) {
+					Item item = new Item(info[j], Integer.parseInt(info[j + 1]), Integer.parseInt(info[j + 2]));
+					userManager.readUserCart(index).addListItem(item);
+				}
+				index++;
 			}
-			index++;
-		}
 
-		String[] itemInfo = temp[0].split("/");
-		for (int i = 0; i < itemInfo.length; i += 2) {
-			itemManager.createItem(itemInfo[i], Integer.parseInt(itemInfo[i + 1]));
+			String[] itemInfo = temp[0].split("/");
+			for (int i = 0; i < itemInfo.length; i += 2) {
+				itemManager.createItem(itemInfo[i], Integer.parseInt(itemInfo[i + 1]));
+			}
 		}
 	}
 
