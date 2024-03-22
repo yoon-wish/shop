@@ -32,6 +32,7 @@ public class Shop {
 
 	private UserManager userManager = UserManager.getInstance();
 	private ItemManager itemManager = ItemManager.getInstance();
+	private	FileManager fileManager = FileManager.getInstance();
 
 	private String title;
 	private int log;
@@ -360,7 +361,7 @@ public class Shop {
 	}
 
 	private void result() {
-
+		System.out.printf("총 매출은 %d원입니다.\n", result);
 	}
 
 	private int inputNumber(String message) {
@@ -379,11 +380,56 @@ public class Shop {
 		System.out.print(message + " : ");
 		return sc.next();
 	}
+	
+	// 품목이름1/가격1/품목이름2/가격2/품목이름3/가격3 ...
+	// 아이디/비밀번호/품목이름1/가격1/개수1/품목이름2/가격2/개수2 ...
+	// 아이디/비밀번호/품목이름1/가격1/개수1
+	// ...
+	
+	public String saveInfo() {
+		String info = "";
+		
+		// 품목 정보들
+		for(int i=0; i<itemManager.itemSize(); i++) {
+			info += itemManager.readItem(i).getName() +"/";
+			info += itemManager.readItem(i).getPrice();
+			
+			if(i<itemManager.itemSize()-1)
+				info += "/";
+		}
+		
+		info += "\n";
+		
+		// 회원 정보들
+		for(int i=0; i<userManager.userSize(); i++) {
+			info += userManager.readUser(i).getId() + "/";
+			info += userManager.readUser(i).getPassword();
+			Cart cart = userManager.readUserCart(i);
+			for(int j=0; j<cart.listSize(); j++) {
+				info += "/";
+				info += cart.getList(j).getName() + "/";
+				info += cart.getList(j).getPrice() + "/";
+				info += cart.getList(j).getCount();
+				
+				if(j<cart.listSize() -1)
+					info += "/";
+			}
+			if(i<userManager.userSize()-1) {
+				info += "\n";
+			}
+			
+		}
+		
+		
+		return info;
+	}
 
 	public void run() {
+		fileManager.load();
 		while (true) {
 			printMenu();
 			runMenu(option());
+			fileManager.save(saveInfo());
 		}
 	}
 
@@ -397,7 +443,7 @@ public class Shop {
 	// ㄴ 내장바구니 [O]
 	// ㄴ 항목삭제 [O]
 	// ㄴ 수량수정 [O]
-	// ㄴ 결제 [X]
+	// ㄴ 결제 [O]
 	// 파일
 	// ㄴ 자동저장 [X]
 	// ㄴ 자동로드 [X]
