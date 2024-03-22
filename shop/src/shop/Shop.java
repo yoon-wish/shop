@@ -1,6 +1,7 @@
 package shop;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Shop {
@@ -339,7 +340,7 @@ public class Shop {
 		}
 
 		modifyMyItemName(index, name);
-		
+
 		Item item = new Item(name, itemManager.readItem(index).getPrice());
 		itemManager.updateItem(index, item);
 
@@ -360,20 +361,20 @@ public class Shop {
 
 	private void modifyItemPrice(int index) {
 		int price = inputNumber("수정할 가격");
-		
-		if(price < 1) {
+
+		if (price < 1) {
 			System.err.println("1원이상 입력");
 			return;
 		}
-		
+
 		modifyMyItemPrice(index, price);
-		
+
 		Item item = new Item(itemManager.readItem(index).getName(), price);
 		itemManager.updateItem(index, item);
-		
+
 		System.out.println("수정완료");
 	}
-	
+
 	private void modifyMyItemPrice(int index, int price) {
 		int itemPrice = itemManager.readItem(index).getPrice();
 		for (int i = 0; i < userManager.userSize(); i++) {
@@ -385,7 +386,6 @@ public class Shop {
 			}
 		}
 	}
-	
 
 	private int printModifySubMenu() {
 		System.out.println("1. 상품명");
@@ -415,11 +415,6 @@ public class Shop {
 		return sc.next();
 	}
 
-	// 품목이름1/가격1/품목이름2/가격2/품목이름3/가격3 ...
-	// 아이디/비밀번호/품목이름1/가격1/개수1/품목이름2/가격2/개수2 ...
-	// 아이디/비밀번호/품목이름1/가격1/개수1
-	// ...
-
 	public String saveInfo() {
 		String info = "";
 
@@ -439,8 +434,10 @@ public class Shop {
 			info += userManager.readUser(i).getId() + "/";
 			info += userManager.readUser(i).getPassword();
 			Cart cart = userManager.readUserCart(i);
-			for (int j = 0; j < cart.listSize(); j++) {
+			if (cart.listSize() > 0) {
 				info += "/";
+			}
+			for (int j = 0; j < cart.listSize(); j++) {
 				info += cart.getList(j).getName() + "/";
 				info += cart.getList(j).getPrice() + "/";
 				info += cart.getList(j).getCount();
@@ -448,6 +445,7 @@ public class Shop {
 				if (j < cart.listSize() - 1)
 					info += "/";
 			}
+
 			if (i < userManager.userSize() - 1) {
 				info += "\n";
 			}
@@ -457,8 +455,36 @@ public class Shop {
 		return info;
 	}
 
+	// 품목이름1/가격1/품목이름2/가격2/품목이름3/가격3 ...
+	// 아이디/비밀번호/품목이름1/가격1/개수1/품목이름2/가격2/개수2 ...
+	// 아이디/비밀번호/품목이름1/가격1/개수1
+	// ...
+
+	public void init() {
+		String text = fileManager.load();
+
+		String[] temp = text.split("\n");
+		int index = 0;
+		for (int i = 1; i < temp.length; i++) {
+			String[] info = temp[i].split("/");
+			if (!info[0].equals("1111"))
+				userManager.createUser(info[0], info[1]);
+			int size = info.length - 2;
+			for (int j = 2; j < size; j += 3) {
+				Item item = new Item(info[j], Integer.parseInt(info[j + 1]), Integer.parseInt(info[j + 2]));
+				userManager.readUserCart(index).addListItem(item);
+			}
+			index++;
+		}
+
+		String[] itemInfo = temp[0].split("/");
+		for (int i = 0; i < itemInfo.length; i += 2) {
+			itemManager.createItem(itemInfo[i], Integer.parseInt(itemInfo[i + 1]));
+		}
+	}
+
 	public void run() {
-		fileManager.load();
+		init();
 		while (true) {
 			printMenu();
 			runMenu(option());

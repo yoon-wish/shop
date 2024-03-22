@@ -5,8 +5,11 @@ public class Item {
 	private int price;
 	private int count;
 	
-	public Item() {
-		
+	// 로드용 생성자
+	public Item(String name, int price, int count) {
+		this.name = name;
+		this.price = price;
+		this.count = count;
 	}
 	
 	public Item(String name, int price) {
