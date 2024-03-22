@@ -48,6 +48,10 @@ public class UserManager {
 		group.get(index).setCart();
 	}
 	
+	public void deleteUser(int index) {
+		group.remove(index);
+	}
+	
 	public int findIndexById(String id) {
 		int index = -1;
 		for(int i=0; i<group.size(); i++) {

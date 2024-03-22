@@ -121,6 +121,7 @@ public class Shop {
 
 		String password = inputString("password");
 		if (userManager.readUser(log).getPassword().equals(password)) {
+			userManager.deleteUser(log);
 			System.out.println("탈퇴완료");
 			log = -1;
 		} else
@@ -403,7 +404,7 @@ public class Shop {
 		return inputNumber("선택");
 	}
 
-	private void result() {
+	private void result() {  
 		System.out.printf("총 매출은 %d원입니다.\n", result);
 	}
 
