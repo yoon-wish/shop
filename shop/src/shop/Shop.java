@@ -291,10 +291,10 @@ public class Shop {
 		System.out.println("--------------------");
 		myBasket();
 		System.out.println("--------------------");
-		System.out.println("총액: " + cash +"원");
+		System.out.println("총액: " + cash + "원");
 		System.out.println("--------------------");
 	}
-	
+
 	private void addItem() {
 		String name = inputString("아이템명");
 		int price = inputNumber("상품 가격");
@@ -404,7 +404,7 @@ public class Shop {
 		return inputNumber("선택");
 	}
 
-	private void result() {  
+	private void result() {
 		System.out.printf("총 매출은 %d원입니다.\n", result);
 	}
 
@@ -429,6 +429,7 @@ public class Shop {
 		String info = "";
 
 		// 품목 정보들
+		info += result + "/";
 		for (int i = 0; i < itemManager.itemSize(); i++) {
 			info += itemManager.readItem(i).getName() + "/";
 			info += itemManager.readItem(i).getPrice();
@@ -490,7 +491,8 @@ public class Shop {
 
 			if (!temp[0].equals("")) {
 				String[] itemInfo = temp[0].split("/");
-				for (int i = 0; i < itemInfo.length; i += 2) {
+				result = Integer.parseInt(itemInfo[0]);
+				for (int i = 1; i < itemInfo.length; i += 2) {
 					itemManager.createItem(itemInfo[i], Integer.parseInt(itemInfo[i + 1]));
 				}
 			}
